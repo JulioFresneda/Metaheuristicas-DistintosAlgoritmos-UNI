@@ -1,0 +1,2 @@
+El ejecutable está en la carpeta bin. Para ejecutarlo, pasarle el archivo.dat como argumento. El programa devolverá las soluciones obtenidas,
+con su coste, usando tanto Greedy como Búsqueda Lineal.
