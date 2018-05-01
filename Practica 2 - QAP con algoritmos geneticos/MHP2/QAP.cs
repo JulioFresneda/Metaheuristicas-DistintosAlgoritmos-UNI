@@ -67,9 +67,16 @@ namespace MH
         public void SetQAP(QAP copia)
         {
             tamProblema = copia.tamProblema;
+
+            localizacionesEnUnidades.Clear();
             localizacionesEnUnidades.AddRange(copia.localizacionesEnUnidades);
+
+            flujosUnidades.Clear();
             flujosUnidades.AddRange(copia.flujosUnidades);
+
+            distanciasLocalizaciones.Clear();
             distanciasLocalizaciones.AddRange(copia.distanciasLocalizaciones);
+
             tiempoEjecucion = copia.tiempoEjecucion;
             coste = copia.coste;
         }

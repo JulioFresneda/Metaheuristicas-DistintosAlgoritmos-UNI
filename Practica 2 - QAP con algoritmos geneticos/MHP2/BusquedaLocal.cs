@@ -16,11 +16,30 @@ namespace MHP2
 
         private TimeSpan tiempoEjecucion;
 
+        public BusquedaLocal()
+        {
+            tamProblema = 0;
+        }
+
         public BusquedaLocal( QAP qap )
         {
             tamProblema = qap.GetTamProblema();
             localizacionesEnUnidades.AddRange(qap.GetLocalizacionesEnUnidades());
             flujosUnidades.AddRange(qap.GetFlujosUnidades());
+            distanciasLocalizaciones.AddRange(qap.GetDistanciasLocalizaciones());
+        }
+
+        public void SetQAP(QAP qap)
+        {
+            tamProblema = qap.GetTamProblema();
+
+            localizacionesEnUnidades.Clear();
+            localizacionesEnUnidades.AddRange(qap.GetLocalizacionesEnUnidades());
+
+            flujosUnidades.Clear();
+            flujosUnidades.AddRange(qap.GetFlujosUnidades());
+
+            distanciasLocalizaciones.Clear();
             distanciasLocalizaciones.AddRange(qap.GetDistanciasLocalizaciones());
         }
 

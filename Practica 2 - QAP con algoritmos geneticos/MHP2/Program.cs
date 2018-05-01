@@ -15,8 +15,8 @@ namespace MH
 
 
             QAP qap = new QAP(ruta);
-            AG agg = new AG(ruta,true);
-            Console.WriteLine("Solucion AGG: " + agg.GetBestSolution().CalcularCoste());
+            AM am = new AM(ruta, false, 10, 0.1f, false);
+            Console.WriteLine("Solucion AGG: " + am.GetBestSolution().CalcularCoste());
 
 
             Console.ReadKey();

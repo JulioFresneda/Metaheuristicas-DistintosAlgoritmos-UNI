@@ -7,60 +7,37 @@ namespace MHP2
 {
     class AG
     {
-        public int numCromosomas { get; }
-        public int numGenes { get; }
-        public float probCruce { get; }
-        public float probMutacion { get; }
-        public int numIteraciones { get; }
+        protected int numCromosomas { get; set; }
+        protected int numGenes { get; set; }
+        protected float probCruce { get; set; }
+        protected float probMutacion { get; set; }
+        protected int numIteraciones { get; set; }
 
-        public bool pmx { get; }
-        public bool estacionario { get; }
+        protected bool pmx { get; set; }
+        protected bool estacionario { get; set; }
 
-        public float numCruces { get; }
-        public float numMutaciones { get; }
+        protected bool memetico { get; set; }
+        protected int ciclosMeme { get; set; }
+        protected float porcentajeMeme { get; set; }
+        protected bool mejorPorcentajeMeme { get; set; }
 
-        private List<QAP> poblacion = new List<QAP>();
-        private List<QAP> poblacionP = new List<QAP>();
-        private List<QAP> poblacionI = new List<QAP>();
-        private List<QAP> poblacionH = new List<QAP>();
+
+        protected float numCruces { get; set; }
+        protected float numMutaciones { get; set; }
+
+        protected List<QAP> poblacion = new List<QAP>();
+        protected List<QAP> poblacionP = new List<QAP>();
+        protected List<QAP> poblacionI = new List<QAP>();
+        protected List<QAP> poblacionH = new List<QAP>();
 
 
         QAP mejorPob;
-
-        public AG( string ruta, bool _pmx = false, bool _estacionario = false, int num_Cromosomas = 50, float prob_Cruce = 0.7f, float prob_Mutacion = 0.001f, int num_Iteraciones = 50000 )
-        {
-            numCromosomas = num_Cromosomas;
-
-            if (prob_Cruce <= 1f && prob_Cruce >= 0f) probCruce = prob_Cruce;
-            else probCruce = 0.7f;
-
-            if (prob_Mutacion <= 1f && prob_Mutacion >= 0f) probMutacion = prob_Mutacion;
-            else probMutacion = 0.001f;
-
-            numIteraciones = num_Iteraciones;
-
-            for( int i=0; i<numCromosomas; i++ ) poblacion.Add( new QAP(ruta) );
-
-
-            pmx = _pmx;
-            estacionario = _estacionario;
-
-            numCruces = (probCruce * numCromosomas);
-            numGenes = poblacion[0].GetLocalizacionesEnUnidades().Count;
-            numMutaciones = (probMutacion * numCromosomas * numGenes);
-            
+        BusquedaLocal bl = new BusquedaLocal();
 
 
 
 
-
-            Evolucionar();
-        }
-
-
-
-
-        private void Evolucionar()
+        protected void Evolucionar()
         {
             for( int i=0; i<numIteraciones; i++ )
             {
@@ -84,6 +61,7 @@ namespace MHP2
                 }
                 else
                 {
+                    if (memetico && i % ciclosMeme == 0) AplicarMemetico();
                     SeleccionGeneracional();
                     CruceGeneracional();
                     MutacionGeneracional();
@@ -94,15 +72,22 @@ namespace MHP2
 
                 Console.WriteLine("Mejor solucion encontrada: " + mejor.GetCoste());
 
-                if (i == 20000)
-                {
-                    foreach (QAP c in poblacion) Console.Write(c.GetCoste() + " ");
-                    Console.ReadKey();
-                }
         
             }
         }
 
+
+        private void AplicarMemetico()
+        {
+
+            
+            for( int i=0; i<porcentajeMeme*numCromosomas; i++ )
+            {
+                bl.SetQAP(poblacion[i]);
+                poblacion[i].SetQAP(bl.ResolverBL());
+                
+            }
+        }
 
         private void SeleccionEstacionario()
         {
