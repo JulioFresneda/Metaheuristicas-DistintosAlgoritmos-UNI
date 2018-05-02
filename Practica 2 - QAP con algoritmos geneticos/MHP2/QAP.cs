@@ -14,7 +14,6 @@ namespace MH
         private List<List<int>> distanciasLocalizaciones = new List<List<int>>();
         private int coste { get; set; }
 
-        private TimeSpan tiempoEjecucion;
 
         public QAP( QAP copia )
         {
@@ -22,17 +21,15 @@ namespace MH
             localizacionesEnUnidades.AddRange(copia.localizacionesEnUnidades);
             flujosUnidades.AddRange(copia.flujosUnidades);
             distanciasLocalizaciones.AddRange(copia.distanciasLocalizaciones);
-            tiempoEjecucion = copia.tiempoEjecucion;
             coste = copia.coste;
         }
 
-        public QAP(int t, List<int> lu, List<List<int>> fu, List<List<int>> dl, TimeSpan te)
+        public QAP(int t, List<int> lu, List<List<int>> fu, List<List<int>> dl)
         {
             tamProblema = t;
             localizacionesEnUnidades.AddRange(lu);
             flujosUnidades.AddRange(fu);
             distanciasLocalizaciones.AddRange(dl);
-            tiempoEjecucion = te;
             coste = CalcularCoste();
         }
        
@@ -77,7 +74,6 @@ namespace MH
             distanciasLocalizaciones.Clear();
             distanciasLocalizaciones.AddRange(copia.distanciasLocalizaciones);
 
-            tiempoEjecucion = copia.tiempoEjecucion;
             coste = copia.coste;
         }
 
@@ -186,40 +182,6 @@ namespace MH
 
 
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public TimeSpan GetTiempoEjecucion() => tiempoEjecucion;
 
         public int GetTamProblema() => tamProblema;
 

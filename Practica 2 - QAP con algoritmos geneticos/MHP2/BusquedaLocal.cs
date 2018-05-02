@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Diagnostics;
 using MH;
 
 namespace MHP2
@@ -14,7 +13,7 @@ namespace MHP2
         private List<List<int>> flujosUnidades = new List<List<int>>();
         private List<List<int>> distanciasLocalizaciones = new List<List<int>>();
 
-        private TimeSpan tiempoEjecucion;
+        
 
         public BusquedaLocal()
         {
@@ -46,8 +45,7 @@ namespace MHP2
         public QAP ResolverBL()
         {
             
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+            
 
             bool hayMejora = true;
             bool improveFlag;
@@ -85,11 +83,9 @@ namespace MHP2
                 }
             }
 
-            sw.Stop();
+            
 
-            tiempoEjecucion = sw.Elapsed;
-
-            return new QAP(tamProblema, localizacionesEnUnidades, flujosUnidades, distanciasLocalizaciones, tiempoEjecucion);
+            return new QAP(tamProblema, localizacionesEnUnidades, flujosUnidades, distanciasLocalizaciones);
         }
 
 

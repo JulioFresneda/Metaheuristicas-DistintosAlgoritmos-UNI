@@ -41,7 +41,7 @@ namespace MHP2
         {
             for( int i=0; i<numIteraciones; i++ )
             {
-                Console.WriteLine("Iteracion " + i);
+                
                 QAP mejor = poblacion[0];
                 for (int j = 0; j < poblacion.Count; j++)
                 {
@@ -68,9 +68,9 @@ namespace MHP2
                     ReemplazamientoGeneracional();
                 }
 
-                      
 
-                Console.WriteLine("Mejor solucion encontrada: " + mejor.GetCoste());
+                if (i % 100 == 0) Console.WriteLine("Iteracion " + i);
+                
 
         
             }
@@ -132,13 +132,13 @@ namespace MHP2
         private void CruceEstacionario()
         {
             Tuple<QAP, QAP> cruzados;
-            Console.WriteLine("Antes del cruce " + poblacionP[0].GetCoste() + " " + poblacionP[1].GetCoste());
+            
             if (pmx) cruzados = CruzarPMX(0, 1);
             else cruzados = CruzarPosicion(0, 1);
             poblacionI.Add(cruzados.Item1);
             poblacionI.Add(cruzados.Item2);
 
-            Console.WriteLine("Después del cruce " + poblacionI[0].GetCoste() + " " + poblacionI[1].GetCoste());
+            
 
         }
 
@@ -238,12 +238,12 @@ namespace MHP2
             if (poblacion[it1].GetCoste() > poblacionH[0].GetCoste())
             {
                 poblacion[it1] = new QAP(poblacionH[0]);
-                Console.WriteLine("Sustituido cromosoma " + it1 + " por: " + poblacionH[0].GetCoste());
+               
             }
             if (poblacion[it2].GetCoste() > poblacionH[1].GetCoste())
             {
                 poblacion[it2] = new QAP(poblacionH[1]);
-                Console.WriteLine("Sustituido cromosoma " + it2 + " por: " + poblacionH[1].GetCoste());
+                
             }
 
                 poblacionH.Clear();
@@ -353,7 +353,7 @@ namespace MHP2
             }
 
 
-            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), genesH1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones(), c1.GetTiempoEjecucion()), new QAP(c2.GetTamProblema(), genesH2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones(), c2.GetTiempoEjecucion()));
+            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), genesH1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones()), new QAP(c2.GetTamProblema(), genesH2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones()));
 
 
 
@@ -411,7 +411,7 @@ namespace MHP2
    
 
 
-            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), nuevosgenesc1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones(), c1.GetTiempoEjecucion()), new QAP(c2.GetTamProblema(), nuevosgenesc2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones(), c2.GetTiempoEjecucion()));
+            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), nuevosgenesc1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones()), new QAP(c2.GetTamProblema(), nuevosgenesc2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones()));
 
             
         }

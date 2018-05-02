@@ -1,7 +1,6 @@
 ﻿using MH;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 
 namespace MHP2
@@ -13,7 +12,6 @@ namespace MHP2
         private List<List<int>> flujosUnidades = new List<List<int>>();
         private List<List<int>> distanciasLocalizaciones = new List<List<int>>();
 
-        private TimeSpan tiempoEjecucion;
 
         public Greedy(QAP qap)
         {
@@ -26,8 +24,7 @@ namespace MHP2
 
         public QAP ResolverGreedy()
         {
-            Stopwatch sw = new Stopwatch();
-            sw.Start();
+
 
             List<int> potencialFlujoUnidades = new List<int>();
             List<int> potencialDistanciaLocalizaciones = new List<int>();
@@ -75,11 +72,8 @@ namespace MHP2
 
             }
 
-            sw.Stop();
 
-            tiempoEjecucion = sw.Elapsed;
-
-            return new QAP(tamProblema, localizacionesEnUnidades, flujosUnidades, distanciasLocalizaciones, tiempoEjecucion);
+            return new QAP(tamProblema, localizacionesEnUnidades, flujosUnidades, distanciasLocalizaciones);
 
 
         }
