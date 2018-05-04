@@ -7,10 +7,10 @@ namespace MHP2
 {
     class AGG : AG
     {
-        public AGG(string ruta, bool _pmx = false, int num_Cromosomas = 50, float prob_Cruce = 0.7F, float prob_Mutacion = 0.001F, int num_Iteraciones = 50000)
+        public AGG(string ruta, Random rand, bool _pmx = false, int num_Cromosomas = 50, float prob_Cruce = 0.7F, float prob_Mutacion = 0.001F, int num_Iteraciones = 500000, int _maxLlamadasFuncionObjetivo = 50000)
         {
             numCromosomas = num_Cromosomas;
-
+            r = rand;
             if (prob_Cruce <= 1f && prob_Cruce >= 0f) probCruce = prob_Cruce;
             else probCruce = 0.7f;
 
@@ -30,7 +30,7 @@ namespace MHP2
             numGenes = poblacion[0].GetLocalizacionesEnUnidades().Count;
             numMutaciones = (probMutacion * numCromosomas * numGenes);
 
-
+            maxLlamadasFuncionObjetivo = _maxLlamadasFuncionObjetivo;
 
 
 

@@ -42,7 +42,7 @@ namespace MHP2
             distanciasLocalizaciones.AddRange(qap.GetDistanciasLocalizaciones());
         }
 
-        public QAP ResolverBL()
+        public QAP ResolverBL( ref int llamadasFuncionObjetivo )
         {
             
             
@@ -51,18 +51,18 @@ namespace MHP2
             bool improveFlag;
             List<bool> dlb = new List<bool>();
             for (int i = 0; i < tamProblema; i++) { dlb.Add(false); }
-
-            while (hayMejora)
+            int z = 0;
+            while (hayMejora && z < 400)
             {
                 hayMejora = false;
-
-                for (int i = 0; i < tamProblema; i++)
+                z++;
+                for (int i = 0; i < tamProblema && z < 400; i++)
                 {
 
                     if (!dlb[i])
                     {
                         improveFlag = false;
-                        for (int j = 0; j < tamProblema; j++)
+                        for (int j = 0; j < tamProblema && z < 400; j++)
                         {
                             if (i != j)
                             {
@@ -70,10 +70,12 @@ namespace MHP2
                                 {
 
                                     IntercambiarLocalizaciones(i, j);
+                                    llamadasFuncionObjetivo++;
                                     dlb[i] = false;
                                     dlb[j] = false;
                                     improveFlag = true;
                                     hayMejora = true;
+                                    z++;
                                 }
                             }
                         }

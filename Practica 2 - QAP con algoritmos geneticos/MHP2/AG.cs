@@ -7,11 +7,15 @@ namespace MHP2
 {
     class AG
     {
+        int mutados;
+        protected Random r;
         protected int numCromosomas { get; set; }
         protected int numGenes { get; set; }
         protected float probCruce { get; set; }
         protected float probMutacion { get; set; }
         protected int numIteraciones { get; set; }
+        protected int llamadasFuncionObjetivo { get; set; }
+        protected int maxLlamadasFuncionObjetivo { get; set; }
 
         protected bool pmx { get; set; }
         protected bool estacionario { get; set; }
@@ -24,6 +28,8 @@ namespace MHP2
 
         protected float numCruces { get; set; }
         protected float numMutaciones { get; set; }
+
+
 
         protected List<QAP> poblacion = new List<QAP>();
         protected List<QAP> poblacionP = new List<QAP>();
@@ -39,9 +45,14 @@ namespace MHP2
 
         protected void Evolucionar()
         {
-            for( int i=0; i<numIteraciones; i++ )
+            mutados = 0;
+            llamadasFuncionObjetivo = 0;
+            
+
+            for( int i=0;i<numIteraciones && llamadasFuncionObjetivo < maxLlamadasFuncionObjetivo; i++ )
             {
-                
+
+
                 QAP mejor = poblacion[0];
                 for (int j = 0; j < poblacion.Count; j++)
                 {
@@ -54,10 +65,12 @@ namespace MHP2
 
                 if (estacionario)
                 {
+
                     SeleccionEstacionario();
                     CruceEstacionario();
                     MutacionEstacionario();
                     ReemplazamientoEstacionario();
+                    
                 }
                 else
                 {
@@ -68,37 +81,95 @@ namespace MHP2
                     ReemplazamientoGeneracional();
                 }
 
-
-                if (i % 100 == 0) Console.WriteLine("Iteracion " + i);
                 
+                
+
+                /*if (i % 100 == 0)
+                {
+                    Console.WriteLine("Iteracion " + i);
+                    Console.WriteLine("Mejor sol " + GetBestSolution().GetCoste());
+                    Console.WriteLine();
+
+                    Console.WriteLine();
+              
+                }*/
+
 
         
             }
+            
+
         }
 
 
         private void AplicarMemetico()
         {
-
-            
-            for( int i=0; i<porcentajeMeme*numCromosomas; i++ )
+            int llam;
+            if ( mejorPorcentajeMeme )
             {
-                bl.SetQAP(poblacion[i]);
-                poblacion[i].SetQAP(bl.ResolverBL());
                 
+                List<QAP> copia = new List<QAP>();
+                copia.AddRange(poblacion);
+                List<int> mejores = new List<int>();
+                QAP mejor = copia[0];
+                int indicemejor = 0;
+                for( int i=0; i<porcentajeMeme*numCromosomas; i++ )
+                {
+                    for( int j=0; j<copia.Count; j++ )
+                    {
+                        if (mejor.GetCoste() < copia[i].GetCoste())
+                        {
+                            mejor = copia[i];
+                            indicemejor = i;
+                        }
+
+                    }
+                    mejores.Add(indicemejor);
+                    copia.Remove(mejor);
+                }
+
+                for (int i = 0; i < mejores.Count; i++)
+                {
+
+
+                    bl.SetQAP(poblacion[mejores[i]]);
+                    llam = llamadasFuncionObjetivo;
+                    poblacion[mejores[i]].SetQAP(bl.ResolverBL(ref llam));
+                    llamadasFuncionObjetivo = llam;
+
+                }
             }
+            else
+            {
+
+                for (int i = 0; i < porcentajeMeme * numCromosomas; i++)
+                {
+
+
+                    bl.SetQAP(poblacion[i]);
+                    llam = llamadasFuncionObjetivo;
+                    poblacion[i].SetQAP(bl.ResolverBL(ref llam));
+                    llamadasFuncionObjetivo = llam;
+
+                }
+
+            }
+
         }
 
         private void SeleccionEstacionario()
         {
-            Random r = new Random();
+            
 
             for (int i = 0; i < 2; i++)
             {
                 int r1 = r.Next(0, numCromosomas);
                 int r2 = r.Next(0, numCromosomas);
 
+
+
                 while (r2 == r1) r2 = r.Next(0, numCromosomas);
+
 
                 poblacionP.Add(TorneoBinario(r1, r2));
 
@@ -113,7 +184,7 @@ namespace MHP2
 
         private void SeleccionGeneracional()
         {
-            Random r = new Random();
+            
 
             for ( int i=0; i<numCromosomas; i++ )
             {
@@ -122,7 +193,11 @@ namespace MHP2
 
                 while( r2 == r1 ) r2 = r.Next(0, numCromosomas);
 
+                
+
                 poblacionP.Add(TorneoBinario(r1, r2));
+
+         
 
 
 
@@ -133,12 +208,14 @@ namespace MHP2
         {
             Tuple<QAP, QAP> cruzados;
             
-            if (pmx) cruzados = CruzarPMX(0, 1);
+            if (pmx)
+            {
+                cruzados = CruzarPMX(0, 1);
+                
+            }
             else cruzados = CruzarPosicion(0, 1);
-            poblacionI.Add(cruzados.Item1);
-            poblacionI.Add(cruzados.Item2);
-
-            
+            poblacionI.Add(new QAP(cruzados.Item1));
+            poblacionI.Add(new QAP(cruzados.Item2));
 
         }
 
@@ -149,40 +226,44 @@ namespace MHP2
             {
                 if( pmx ) cruzados = CruzarPMX(i, i + 1);
                 else cruzados = CruzarPosicion(i, i + 1);
-                poblacionI.Add(cruzados.Item1);
-                poblacionI.Add(cruzados.Item2);
+                poblacionI.Add(new QAP(cruzados.Item1));
+                poblacionI.Add(new QAP(cruzados.Item2));
             }
             for( int i=(int)numCruces+1; i<numCromosomas; i++ )
             {
-                poblacionI.Add(poblacionP[i]);
+                poblacionI.Add(new QAP(poblacionP[i]));
             }
             
         }
 
         private void MutacionEstacionario()
         {
-            float max = 1 / probMutacion;
+            float max = 1 / (probMutacion * 2 * numGenes);
             int g1, g2;
 
-            Random r = new Random();
-            int c = r.Next(0, (int)max);
+            
+            int c = r.Next(1, (int)max);
             if( c == 1 )
             {
+                
                 g1 = r.Next(0, numGenes);
                 g2 = r.Next(0, numGenes);
                 while (g2 == g1) g2 = r.Next(0, numGenes);
 
                 Mutar(g1, g2, poblacionI[0]);
+            
             }
 
-            c = r.Next(0, (int)max);
+            c = r.Next(1, (int)max);
             if (c == 1)
             {
+                
                 g1 = r.Next(0, numGenes);
                 g2 = r.Next(0, numGenes);
                 while (g2 == g1) g2 = r.Next(0, numGenes);
 
                 Mutar(g1, g2, poblacionI[1]);
+          
             }
 
 
@@ -190,7 +271,7 @@ namespace MHP2
 
         private void MutacionGeneracional()
         {
-            Random r = new Random();
+            
             int c, g1, g2;
             for( int i=0; i<numMutaciones; i++ )
             {
@@ -213,40 +294,61 @@ namespace MHP2
             int it1 = 0;
             int it2 = 0;
 
-            QAP peor = poblacion[0];
             for( int i=0; i<poblacion.Count; i++ )
             {
-                if( poblacion[i].GetCoste() > peor.GetCoste() )
+                if( poblacion[i].GetCoste() > poblacion[it1].GetCoste() )
                 {
                     it1 = i;
-                    peor = poblacion[i];
                 }
             }
 
-
-            if (it1 != 0) peor = poblacion[0];
-            else peor = poblacion[1];
+            if (it1 == 0) it2 = 1;
             for (int i = 0; i < poblacion.Count; i++)
             {
-                if (poblacion[i].GetCoste() > peor.GetCoste() && i != it1 )
+                if (poblacion[i].GetCoste() > poblacion[it2].GetCoste() && i != it1 )
                 {
                     it2 = i;
-                    peor = poblacion[i];
                 }
             }
 
-            if (poblacion[it1].GetCoste() > poblacionH[0].GetCoste())
+            if( poblacionH[0].GetCoste() < poblacion[it1].GetCoste() && poblacionH[1].GetCoste() < poblacion[it2].GetCoste() )
             {
+              
                 poblacion[it1] = new QAP(poblacionH[0]);
-               
-            }
-            if (poblacion[it2].GetCoste() > poblacionH[1].GetCoste())
-            {
                 poblacion[it2] = new QAP(poblacionH[1]);
-                
+            }
+            else if (poblacionH[1].GetCoste() < poblacion[it1].GetCoste() && poblacionH[0].GetCoste() < poblacion[it2].GetCoste())
+            {
+               
+                poblacion[it1] = new QAP(poblacionH[1]);
+                poblacion[it2] = new QAP(poblacionH[0]);
+            }
+            else
+            {
+                if (poblacionH[0].GetCoste() < poblacion[it1].GetCoste())
+                {
+                   
+                    poblacion[it1] = new QAP(poblacionH[0]);
+                }
+                else if (poblacionH[0].GetCoste() < poblacion[it2].GetCoste())
+                {
+                   
+                    poblacion[it2] = new QAP(poblacionH[0]);
+                }
+                else if (poblacionH[1].GetCoste() < poblacion[it1].GetCoste())
+                {
+                  
+                    poblacion[it1] = new QAP(poblacionH[1]);
+                }
+                else if (poblacionH[1].GetCoste() < poblacion[it2].GetCoste())
+                {
+                  
+                    poblacion[it2] = new QAP(poblacionH[1]);
+                }
             }
 
-                poblacionH.Clear();
+            poblacionI.Clear();
+            poblacionH.Clear();
             poblacionP.Clear();
 
         }
@@ -293,6 +395,10 @@ namespace MHP2
 
                 lista[j] = temp;
                 lista[i] = temp2;
+
+                qap.CalcularCoste();
+                llamadasFuncionObjetivo++;
+                mutados++;
             }
         }
 
@@ -302,12 +408,17 @@ namespace MHP2
             QAP c1 = poblacionP[pos1];
             QAP c2 = poblacionP[pos2];
 
+
+
+
             List<int> genesc1 = c1.GetLocalizacionesEnUnidades();
             List<int> genesc2 = c2.GetLocalizacionesEnUnidades();
 
-            Random r = new Random();
+            
             int corteDcha = r.Next(1, genesc1.Count);
             int corteIzq = r.Next(0, corteDcha);
+
+            
 
             List<int> genesH1 = new List<int>();
             List<int> genesH2 = new List<int>();
@@ -351,9 +462,12 @@ namespace MHP2
                 }
                     
             }
+            llamadasFuncionObjetivo += 2;
+            QAP uno = new QAP(c1.GetTamProblema(), genesH1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones());
+            QAP dos = new QAP(c2.GetTamProblema(), genesH2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones());
 
 
-            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), genesH1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones()), new QAP(c2.GetTamProblema(), genesH2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones()));
+            return new Tuple<QAP, QAP>(uno,dos);
 
 
 
@@ -368,7 +482,6 @@ namespace MHP2
 
             List<int> genesc1 = c1.GetLocalizacionesEnUnidades();
             List<int> genesc2 = c2.GetLocalizacionesEnUnidades();
-
 
 
             List<int> genesComunes = new List<int>();
@@ -408,10 +521,16 @@ namespace MHP2
                 }
             }
 
-   
 
 
-            return new Tuple<QAP, QAP>(new QAP(c1.GetTamProblema(), nuevosgenesc1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones()), new QAP(c2.GetTamProblema(), nuevosgenesc2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones()));
+
+            llamadasFuncionObjetivo += 2;
+            QAP uno = new QAP(c1.GetTamProblema(), nuevosgenesc1, c1.GetFlujosUnidades(), c1.GetDistanciasLocalizaciones());
+            QAP dos = new QAP(c2.GetTamProblema(), nuevosgenesc2, c2.GetFlujosUnidades(), c2.GetDistanciasLocalizaciones());
+
+
+
+            return new Tuple<QAP, QAP>(uno, dos);
 
             
         }
@@ -422,8 +541,8 @@ namespace MHP2
 
         private QAP TorneoBinario( int r1, int r2 )
         {
-            int coste1 = poblacion[r1].CalcularCoste();
-            int coste2 = poblacion[r2].CalcularCoste();
+            int coste1 = poblacion[r1].GetCoste();
+            int coste2 = poblacion[r2].GetCoste();
             if ( coste1 <= coste2 ) return new QAP(poblacion[r1]);
             else return new QAP(poblacion[r2]);
         }
@@ -432,10 +551,10 @@ namespace MHP2
         {
       
             int n = list.Count;
-            Random rnd = new Random();
+            
             while (n > 1)
             {
-                int k = (rnd.Next(0, n) % n);
+                int k = (r.Next(0, n) % n);
                 n--;
                 T value = list[k];
                 list[k] = list[n];
@@ -448,13 +567,12 @@ namespace MHP2
 
         public QAP GetBestSolution()
         {
-            QAP mejorPi = poblacion[0];
+
             int it = 0;
             for (int i = 0; i < poblacion.Count; i++)
             {
-                if (poblacion[i].GetCoste() < mejorPi.GetCoste())
-                {
-                    mejorPi = poblacionH[i];
+                if (poblacion[i].GetCoste() < poblacion[it].GetCoste()) { 
+
                     it = i;
                 }
             }

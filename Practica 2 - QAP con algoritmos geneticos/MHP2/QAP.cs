@@ -7,7 +7,7 @@ namespace MH
 {
     public class QAP
     {
-
+        static Random r = new Random(2);
         private int tamProblema;
         private List<int> localizacionesEnUnidades = new List<int>();
         private List<List<int>> flujosUnidades = new List<List<int>>();
@@ -45,7 +45,7 @@ namespace MH
             List<int> numerosordenados = new List<int>();
             for( int i=0; i<tamProblema; i++ ) numerosordenados.Add(i);
 
-            Random r = new Random();
+            
 
             while( numerosordenados.Count != 0 )
             {
@@ -105,6 +105,7 @@ namespace MH
 
         public int CalcularCoste()
         {
+
             int coste = 0;
 
             for( int i=0; i<tamProblema; i++ )
@@ -182,6 +183,14 @@ namespace MH
 
 
         
+
+
+
+
+
+
+
+
 
         public int GetTamProblema() => tamProblema;
 
