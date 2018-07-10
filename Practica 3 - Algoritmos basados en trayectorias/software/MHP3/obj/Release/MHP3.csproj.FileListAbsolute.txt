@@ -1,0 +1,5 @@
+C:\Users\Julio\Desktop\MHP3\MHP3\MHP3\bin\Release\MHP3.exe
+C:\Users\Julio\Desktop\MHP3\MHP3\MHP3\bin\Release\MHP3.pdb
+C:\Users\Julio\Desktop\MHP3\MHP3\MHP3\obj\Release\MHP3.csproj.CoreCompileInputs.cache
+C:\Users\Julio\Desktop\MHP3\MHP3\MHP3\obj\Release\MHP3.exe
+C:\Users\Julio\Desktop\MHP3\MHP3\MHP3\obj\Release\MHP3.pdb
